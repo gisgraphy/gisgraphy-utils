@@ -32,6 +32,9 @@ public enum FullTextFields {
 	FEATURECLASS("feature_class"),
 	FEATURECODE("feature_code"),
 	NAME("name"),
+	LABEL("label"),
+	LABEL_POSTAL("label_postal"),
+	ALTERNATE_LABELS("label_alternate"),
 	NAMEASCII("name_ascii"),
 	ELEVATION("elevation"),
 	GTOPO30("gtopo30"),
@@ -102,8 +105,17 @@ public enum FullTextFields {
 	IS_IN_ZIP("is_in_zip"),
 	IS_IN("is_in"),
 	IS_IN_CITIES("is_in_cities"),
-	FULLY_QUALIFIED_ADDRESS("fully_qualified_address"),
-	HOUSE_NUMBERS("house_numbers");
+	HOUSE_NUMBERS("house_numbers"),
+	
+	LANES("lanes"),
+	TOLL("toll"),
+	SURFACE("surface"),
+	MAX_SPEED("max_speed"),
+	SPEED_MODE("speed_mode"),
+	MAX_SPEED_BACKWARD("max_speed_backward"),
+	AZIMUTH_START("azimuth_start"),
+	AZIMUTH_END("azimuth_end");
+	
 	//end of street only
 	
 	/** The value of the fulltext field in the schema.xml */

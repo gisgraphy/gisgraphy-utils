@@ -86,6 +86,9 @@ public class RestClient implements IRestClient {
 		httpClientParams.setHttpElementCharset("utf8");
 		httpClientParams.setConnectionManagerTimeout(15000);
 		httpClientParams.setParameter(HttpMethodParams.USER_AGENT, ClientConfig.CLIENT_USER_AGENT);
+		httpClientParams.setParameter("Accept","application/json");
+		httpClientParams.setParameter("Accept-Encoding","gzip");
+		httpClientParams.setParameter("Accept-Language", "en");
 		httpClient.setParams(httpClientParams);
 
 		if (this.httpClient == null) {
