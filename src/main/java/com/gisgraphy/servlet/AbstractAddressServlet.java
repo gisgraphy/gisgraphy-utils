@@ -53,6 +53,12 @@ public abstract class AbstractAddressServlet extends GisgraphyServlet {
     public final static String INDENT_PARAMETER = "indent";
     public final static String POSTAL_PARAMETER = "postal";
     public final static String STANDARDIZE_PARAMETER = "standardize";
+	public static final String LAT_PARAMETER = "lat";
+	public static final String LONG_PARAMETER = "lng";
+	public static final String RADIUS_PARAMETER = "radius";
+	public static final String FUZZY_PARAMETER = "fuzzy";
+	public static final String PARSED_PARAMETER = "parsed";
+    
     
     public static final int QUERY_MAX_LENGTH = 400;
 

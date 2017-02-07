@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Assert;
@@ -187,8 +188,8 @@ public class AddressQueryHttpBuilderTest {
 	    + " should set default if not supported  ", OutputFormat.getDefault(), query
 	    .getFormat());
     
-
     
+     
     //test indent
     // with no value specified
     request = new MockHttpServletRequest();
@@ -331,7 +332,216 @@ public class AddressQueryHttpBuilderTest {
 	query =builder.buildFromRequest(request);
     assertEquals("api key Should Be set",
 	     "apiKEY",query.getApikey());
-	
+    
+    
+    // test Point
+    // with empty lat
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LAT_PARAMETER, "");
+    try {
+    	query =builder.buildFromRequest(request);
+    } catch (RuntimeException e) {
+	fail("When there is empty latitude, query should throw");
+    }
+    // With wrong lat
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LAT_PARAMETER, "a");
+    try {
+    	query =builder.buildFromRequest(request);
+	fail("A non numeric lat should throw");
+    } catch (RuntimeException e) {
+    }
+    // With too small lat
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LAT_PARAMETER, "-92");
+    try {
+    	query =builder.buildFromRequest(request);
+	fail("latitude should not accept latitude < -90");
+    } catch (RuntimeException e) {
+    }
+
+    // With too high lat
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LAT_PARAMETER, "92");
+    try {
+    	query =builder.buildFromRequest(request);
+	fail("latitude should not accept latitude > 90");
+    } catch (RuntimeException e) {
+    }
+
+    // with empty long
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LONG_PARAMETER, "");
+    try {
+    	query =builder.buildFromRequest(request);
+    } catch (RuntimeException e) {
+	fail("When there is empty longitude, query should throw");
+    }
+    // With wrong Long
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LONG_PARAMETER, "a");
+    try {
+    	query =builder.buildFromRequest(request);
+	fail("A null lat should throw");
+    } catch (RuntimeException e) {
+    }
+
+    // with too small long
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LONG_PARAMETER, "-182");
+    try {
+    	query =builder.buildFromRequest(request);
+	fail("longitude should not accept longitude < -180");
+    } catch (RuntimeException e) {
+    }
+
+    // with too high long
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LONG_PARAMETER, "182");
+    try {
+    	query =builder.buildFromRequest(request);
+	fail("longitude should not accept longitude > 180");
+    } catch (RuntimeException e) {
+    }
+
+    // with long with comma
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LONG_PARAMETER, "10,3");
+    try {
+    	query =builder.buildFromRequest(request);
+	Assert.assertEquals(
+		"request should accept longitude with comma", 10.3D,
+		query.getLongitude().doubleValue(), 0.1);
+
+    } catch (RuntimeException e) {
+    }
+
+    // with long with point
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LONG_PARAMETER, "10.3");
+    try {
+    	query =builder.buildFromRequest(request);
+	Assert.assertEquals(
+		"request should accept longitude with comma", 10.3D,
+		query.getLongitude().doubleValue(), 0.1);
+
+    } catch (RuntimeException e) {
+    }
+
+    // with lat with comma
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LAT_PARAMETER, "10,3");
+    try {
+    	query =builder.buildFromRequest(request);
+	Assert.assertEquals(
+		"request should accept latitude with comma", 10.3D,
+		query.getLatitude().doubleValue(), 0.1);
+
+    } catch (RuntimeException e) {
+    }
+
+    // with lat with point
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.LAT_PARAMETER, "10.3");
+    try {
+    	query =builder.buildFromRequest(request);
+	Assert.assertEquals(
+		"request should accept latitude with point", 10.3D,
+		query.getLatitude().doubleValue(), 0.1);
+
+    } catch (RuntimeException e) {
+    }
+
+    // test radius
+    // with missing radius
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.removeParameter(AbstractAddressServlet.RADIUS_PARAMETER);
+    query =builder.buildFromRequest(request);
+    assertEquals("When no " + AbstractAddressServlet.RADIUS_PARAMETER
+	    + " is specified, the  parameter should be set to  "
+	    + AddressQuery.DEFAULT_RADIUS, AddressQuery.DEFAULT_RADIUS,
+	    query.getRadius(), 0.1);
+    // With wrong radius
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.RADIUS_PARAMETER, "a");
+    query =builder.buildFromRequest(request);
+    assertEquals("When wrong " + AbstractAddressServlet.RADIUS_PARAMETER
+	    + " is specified, the  parameter should be set to  "
+	    + AddressQuery.DEFAULT_RADIUS, AddressQuery.DEFAULT_RADIUS,
+	    query.getRadius(), 0.1);
+    // radius with comma
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.RADIUS_PARAMETER, "1,4");
+    query =builder.buildFromRequest(request);
+    assertEquals("Radius should accept comma as decimal separator",
+	    1.4D, query.getRadius(), 0.1);
+
+    // radius with point
+   request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.RADIUS_PARAMETER, "1.4");
+    query =builder.buildFromRequest(request);
+    assertEquals("Radius should accept point as decimal separator",
+	    1.4D, query.getRadius(), 0.1);
+    
+    
+    //parsed unlock
+    request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+    request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.PARSED_PARAMETER, "");
+    query =builder.buildFromRequest(request);
+    Assert.assertEquals(0, query.getParsedAddressUnlockKey());
+
+    request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+    request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.PARSED_PARAMETER, "2");
+    query =builder.buildFromRequest(request);
+    Assert.assertEquals(2, query.getParsedAddressUnlockKey());
+
+    request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+    request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.PARSED_PARAMETER, "a");
+    query =builder.buildFromRequest(request);
+    Assert.assertEquals(0, query.getParsedAddressUnlockKey());
+    
+
+   
+    
+    
     }
 
     
@@ -410,7 +620,7 @@ public class AddressQueryHttpBuilderTest {
 	String houseNumber = "1";
 	String streetName = "california street";
 	request.setParameter(city, city);
-	request.setParameter("houseNumber", houseNumber);
+	request.setParameter("housenumber", houseNumber);
 	request.setParameter("streetName", streetName);
 	request.setParameter("NotExistingFieldName", "foo");
 	request.setParameter("country", "france");

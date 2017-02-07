@@ -26,7 +26,6 @@ package com.gisgraphy.reversegeocoding;
 
 import java.io.OutputStream;
 
-import com.gisgraphy.addressparser.Address;
 import com.gisgraphy.addressparser.AddressResultsDto;
 import com.gisgraphy.geoloc.GeolocResultsDto;
 import com.gisgraphy.service.ServiceException;

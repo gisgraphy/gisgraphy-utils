@@ -38,11 +38,16 @@ import com.gisgraphy.addressparser.AddressQuery;
 import com.gisgraphy.addressparser.StructuredAddressQuery;
 import com.gisgraphy.addressparser.exception.AddressParserException;
 import com.gisgraphy.domain.valueobject.GisgraphyServiceType;
+import com.gisgraphy.fulltext.FulltextQuery;
+import com.gisgraphy.geoloc.GeolocQuery;
+import com.gisgraphy.geoloc.GeolocSearchException;
+import com.gisgraphy.helper.GeolocHelper;
 import com.gisgraphy.helper.IntrospectionHelper;
 import com.gisgraphy.helper.OutputFormatHelper;
 import com.gisgraphy.serializer.common.OutputFormat;
 import com.gisgraphy.servlet.AbstractAddressServlet;
 import com.gisgraphy.servlet.GisgraphyServlet;
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * An address Query builder. it build Address query from HTTP Request
@@ -132,6 +137,76 @@ public class AddressQueryHttpBuilder {
 		// apiKey
 		String apiKey = req.getParameter(GisgraphyServlet.APIKEY_PARAMETER);
 		query.setApikey(apiKey);
+		
+		
+		//force parsed
+		String parsedParameter = req.getParameter(AbstractAddressServlet.PARSED_PARAMETER);
+		if (parsedParameter != null) {
+			int unlockKey = 0;
+			try {
+				unlockKey = Integer.parseInt(parsedParameter);
+				query.setParsedAddressUnlockKey(unlockKey);
+			} catch (NumberFormatException e) {
+			}
+		}
+		
+		
+		// point
+		Float latitude=null;
+		Float longitude=null;
+		// lat
+		try {
+				String latParameter = req.getParameter(AbstractAddressServlet.LAT_PARAMETER);
+					if (latParameter!=null && !latParameter.trim().equals("")){
+						
+						latitude = GeolocHelper.parseInternationalDouble(latParameter);
+						if (latitude < -90 || latitude > 90){
+							throw new GeolocSearchException("latitude is not correct"); 
+						}
+					} 
+			} catch (Exception e) {
+				throw new GeolocSearchException("latitude is not correct");
+			}
+
+		// long
+		try {
+		    String longParameter = req
+			    .getParameter(AbstractAddressServlet.LONG_PARAMETER);
+		    if (longParameter!=null && !longParameter.trim().equals("")){
+		    	longitude = GeolocHelper.parseInternationalDouble(longParameter);
+		    	if (latitude < -180 || latitude > 180){
+					throw new GeolocSearchException("latitude is not correct"); 
+				}
+		    } 
+		} catch (Exception e) {
+		    throw new GeolocSearchException(
+			    "longitude is not correct ");
+		}
+		
+		
+		// point
+		
+		Point point = null ;
+		try {
+			if (latitude!=null && longitude!=null ){
+				point = GeolocHelper.createPoint(longitude, latitude);
+			} 
+		} catch (RuntimeException e1) {
+		    	throw new GeolocSearchException("can not determine Point");
+		}
+		query.around(point);
+		
+		// radius
+		double radius;
+		try {
+		    radius = GeolocHelper.parseInternationalDouble(req
+			    .getParameter(AbstractAddressServlet.RADIUS_PARAMETER));
+		} catch (Exception e) {
+		    radius = AddressQuery.DEFAULT_RADIUS;
+		}
+		query.withRadius(radius);
+		
+		
 
 		return query;
 	}
