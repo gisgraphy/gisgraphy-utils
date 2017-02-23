@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -332,7 +333,10 @@ public class FulltextClient implements IFullTextSearchEngine {
 				solrResponseDto.is_in_adm = doc.get(FullTextFields.IS_IN_ADM.getValue()).toString();
 			}
 			if (doc.get(FullTextFields.IS_IN_ZIP.getValue()) != null) {
-				solrResponseDto.is_in_zip = (Set) doc.get(FullTextFields.IS_IN_ZIP.getValue());
+				List<String> isinzip = (List<String>) doc.get(FullTextFields.IS_IN_ZIP.getValue());
+				if (isinzip != null){
+					solrResponseDto.is_in_zip = new HashSet<String>(isinzip);
+				}
 			}
 			
 			if (doc.get(FullTextFields.HOUSE_NUMBERS.getValue()) != null) {
