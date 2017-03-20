@@ -46,6 +46,10 @@ public enum FullTextFields {
 	CITY_POPULATION("city_population"),
 	LAT("lat"),
 	LONG("lng"),
+	
+	ADMIN_CENTRE_LAT("lat_admin_centre"),
+	ADMIN_CENTRE_LONG("lng_admin_centre"),
+	
 	ADM1CODE("adm1_code"),
 	ADM2CODE("adm2_code"),
 	ADM3CODE("adm3_code"),
@@ -112,6 +116,7 @@ public enum FullTextFields {
 	LANES("lanes"),
 	TOLL("toll"),
 	SURFACE("surface"),
+	STREET_REF("street_ref"),
 	MAX_SPEED("max_speed"),
 	SPEED_MODE("speed_mode"),
 	MAX_SPEED_BACKWARD("max_speed_backward"),

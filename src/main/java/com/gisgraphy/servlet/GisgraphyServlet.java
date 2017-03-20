@@ -104,19 +104,24 @@ public abstract class  GisgraphyServlet extends HttpServlet {
 
     public void sendCustomError(String errorMessage, OutputFormat format,
 	    HttpServletResponse resp,HttpServletRequest req) {
-	IoutputFormatVisitor visitor = getErrorVisitor(errorMessage);
-	String response = format.accept(visitor);
-	Writer writer = null;
-	try {
-	   if (!resp.isCommitted()){
-	    resp.reset();
-	    resp.setStatus(500);
-	    setResponseContentType(req, resp);
-	    writer = resp.getWriter();
-	    if (writer != null ){
-	    writer.append(response);
-	    writer.flush();
+    		 sendCustomError(errorMessage,500, format, resp, req);
 	}
+	    
+	    public void sendCustomError(String errorMessage,int statusCode, OutputFormat format,
+	    	    HttpServletResponse resp,HttpServletRequest req) {
+	    	IoutputFormatVisitor visitor = getErrorVisitor(errorMessage);
+	    	String response = format.accept(visitor);
+	    	Writer writer = null;
+	    	try {
+	    	   if (!resp.isCommitted()){
+	    	    resp.reset();
+	    	    resp.setStatus(statusCode);
+	    	    setResponseContentType(req, resp);
+	    	    writer = resp.getWriter();
+	    	    if (writer != null ){
+	    	    writer.append(response);
+	    	    writer.flush();
+	    	}
 	    
 	    }
 	   

@@ -81,7 +81,7 @@ public abstract class AbstractAddressServlet extends GisgraphyServlet {
 	    // check empty query
 	    if (checkparameter()==true){
 	    if (HTMLHelper.isParametersEmpty(req, ADDRESS_PARAMETER,COUNTRY_PARAMETER)) {
-		sendCustomError("address and country parameters are required", format, resp,req);
+	    	sendCustomError("address and country parameters are required",400, format, resp,req);
 		return;
 	    }
 	    }
