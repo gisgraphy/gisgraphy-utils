@@ -36,6 +36,7 @@ import com.gisgraphy.addressparser.Address;
 import com.gisgraphy.addressparser.AddressQuery;
 import com.gisgraphy.addressparser.StructuredAddressQuery;
 import com.gisgraphy.addressparser.exception.AddressParserException;
+import com.gisgraphy.domain.valueobject.Pagination;
 import com.gisgraphy.serializer.common.OutputFormat;
 import com.gisgraphy.servlet.AbstractAddressServlet;
 import com.gisgraphy.servlet.GisgraphyServlet;
@@ -539,6 +540,46 @@ public class AddressQueryHttpBuilderTest {
     Assert.assertEquals(0, query.getParsedAddressUnlockKey());
     
 
+ // test limit
+ 	// with no value specified
+ 	request =  new MockHttpServletRequest();
+ 	request.removeParameter(AbstractAddressServlet.LIMIT_PARAMETER);
+ 	 request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+     request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+     query =builder.buildFromRequest(request);
+ 	assertEquals("When no " + AbstractAddressServlet.LIMIT_PARAMETER
+ 		+ " is specified, the parameter should be "
+ 		+ AddressQuery.DEFAULT_LIMIT, AddressQuery.DEFAULT_LIMIT, query
+ 		.getLimitNbResult());
+ 	// with a wrong value
+ 	request =  new MockHttpServletRequest();
+ 	 request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+     request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+ 	request.setParameter(AbstractAddressServlet.LIMIT_PARAMETER, "-1");
+ 	query =builder.buildFromRequest(request);
+ 	assertEquals("When a wrong " + AbstractAddressServlet.LIMIT_PARAMETER
+ 		+ " is specified, the parameter should be "
+ 		+ AddressQuery.DEFAULT_LIMIT, AddressQuery.DEFAULT_LIMIT, query
+ 		.getLimitNbResult());
+ 	//with good value
+  	request =  new MockHttpServletRequest();
+  	 request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+     request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+  	request.setParameter(AbstractAddressServlet.LIMIT_PARAMETER, "5");
+  	query =builder.buildFromRequest(request);
+  	assertEquals("When a god " + AbstractAddressServlet.LIMIT_PARAMETER
+  		+ " is specified, the parameter should be set"
+  		, 5, query.getLimitNbResult());
+ 	// with a non mumeric value
+ 	request =  new MockHttpServletRequest();
+ 	 request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+     request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+ 	request.setParameter(AbstractAddressServlet.LIMIT_PARAMETER, "a");
+ 	query =builder.buildFromRequest(request);
+ 	assertEquals("When a wrong " + AbstractAddressServlet.LIMIT_PARAMETER
+ 		+ " is specified, the parameter should be "
+ 		+ AddressQuery.DEFAULT_LIMIT, AddressQuery.DEFAULT_LIMIT, query
+ 		.getLimitNbResult());
    
     
     

@@ -58,6 +58,8 @@ public abstract class AbstractAddressServlet extends GisgraphyServlet {
 	public static final String RADIUS_PARAMETER = "radius";
 	public static final String FUZZY_PARAMETER = "fuzzy";
 	public static final String PARSED_PARAMETER = "parsed";
+	public static final String LIMIT_PARAMETER = "limitnbresult";
+	
     
     
     public static final int QUERY_MAX_LENGTH = 400;

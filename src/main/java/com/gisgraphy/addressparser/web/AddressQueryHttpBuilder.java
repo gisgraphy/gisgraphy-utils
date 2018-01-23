@@ -206,7 +206,18 @@ public class AddressQueryHttpBuilder {
 		}
 		query.withRadius(radius);
 		
-		
+		//limit
+		int limit= AddressQuery.DEFAULT_LIMIT;
+		try {
+				String limitParameter = req.getParameter(AbstractAddressServlet.LIMIT_PARAMETER);
+					if (limitParameter!=null && !limitParameter.trim().equals("")){
+						
+						limit = Integer.parseInt(limitParameter);
+						query.limitNbResult(limit);
+					} 
+			} catch (Exception e) {
+				//ignore
+			}
 
 		return query;
 	}
