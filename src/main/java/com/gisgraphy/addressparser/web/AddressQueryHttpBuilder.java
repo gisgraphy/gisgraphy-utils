@@ -134,6 +134,13 @@ public class AddressQueryHttpBuilder {
 			query.setStandardize(true);
 		}
 		
+		//fuzzy
+		/*if ("true".equalsIgnoreCase(req.getParameter(AbstractAddressServlet.FUZZY_PARAMETER)) || "on".equalsIgnoreCase(req.getParameter(AbstractAddressServlet.FUZZY_PARAMETER))) {
+			query.withFuzzy(true);
+		} else */if ("false".equalsIgnoreCase(req.getParameter(AbstractAddressServlet.FUZZY_PARAMETER)) || "off".equalsIgnoreCase(req.getParameter(AbstractAddressServlet.FUZZY_PARAMETER))){
+			query.withFuzzy(false);
+		}
+		
 		// apiKey
 		String apiKey = req.getParameter(GisgraphyServlet.APIKEY_PARAMETER);
 		query.setApikey(apiKey);
