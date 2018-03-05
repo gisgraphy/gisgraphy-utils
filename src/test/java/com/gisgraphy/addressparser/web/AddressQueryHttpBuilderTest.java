@@ -228,6 +228,51 @@ public class AddressQueryHttpBuilderTest {
 		    + " should be true for 'on' value (case insensitive and on value)  ",
 	    query.isIndent());
     
+    
+    
+    //test fuzzy
+    // with no value specified
+    request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+    request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    query =builder.buildFromRequest(request);
+    assertEquals("When no " + AbstractAddressServlet.FUZZY_PARAMETER
+        + " is specified, the  parameter should be set to false",false
+        ,query.isFuzzy());
+    // with wrong value
+    request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+    request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.FUZZY_PARAMETER, "unk");
+    query =builder.buildFromRequest(request);
+    assertEquals("When wrong " + AbstractAddressServlet.INDENT_PARAMETER
+        + " is specified, the  parameter should be set to false",false,
+        query.isFuzzy());
+    // test case sensitive
+    request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+    request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.FUZZY_PARAMETER, "TrUe");
+    query =builder.buildFromRequest(request);
+    assertTrue(AbstractAddressServlet.FUZZY_PARAMETER
+        + " should be case insensitive  ", query.isFuzzy());
+    // test 'on' value
+    request = new MockHttpServletRequest();
+    request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
+    request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
+    request.setParameter(AbstractAddressServlet.FUZZY_PARAMETER, "On");
+    query =builder.buildFromRequest(request);
+    assertTrue(
+            AbstractAddressServlet.FUZZY_PARAMETER
+            + " should be false for 'on' value (case insensitive and on value)  ",
+        query.isFuzzy());
+    
+    
+    
+    
+    
+    
+    
     //test postal
     // with no value specified
     request = new MockHttpServletRequest();
