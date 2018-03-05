@@ -19,7 +19,7 @@ public class GeolocClientIntegrationTest {
 	public void executeQuery(){
 		GeolocClient client = new GeolocClient(BASE_URL);
 		GeolocQuery query = createQuery();
-		Assert.assertEquals(3, client.executeQuery(query).getResult().size());
+		Assert.assertEquals(1, client.executeQuery(query).getResult().size());
 	}
 
 	private GeolocQuery createQuery() {

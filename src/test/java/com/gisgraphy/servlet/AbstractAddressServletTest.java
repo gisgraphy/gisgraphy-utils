@@ -139,7 +139,7 @@ public class AbstractAddressServletTest {
 
 	MockHttpServletRequest request = new MockHttpServletRequest();
 	servlet.doGet(request, response);
-	Assert.assertTrue(customErrorSended);
+	Assert.assertTrue(response.getContentAsString().contains("error"));
     }
     
     
@@ -234,7 +234,7 @@ public class AbstractAddressServletTest {
 	MockHttpServletRequest request = new MockHttpServletRequest();
 	request.setParameter(AbstractAddressServlet.COUNTRY_PARAMETER, "us");
 	servlet.doGet(request, response);
-	Assert.assertTrue(customErrorSended);
+	Assert.assertTrue(response.getContentAsString().contains("error"));
 
     }
 
@@ -245,7 +245,7 @@ public class AbstractAddressServletTest {
 	MockHttpServletRequest request = new MockHttpServletRequest();
 	request.setParameter(AbstractAddressServlet.ADDRESS_PARAMETER, "address");
 	servlet.doGet(request, response);
-	Assert.assertTrue(customErrorSended);
+	Assert.assertTrue(response.getContentAsString().contains("error"));
 
     }
 
